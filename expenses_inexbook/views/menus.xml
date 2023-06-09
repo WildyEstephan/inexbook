@@ -4,7 +4,7 @@
     <menuitem id="inexbook_base_root" name="INEXBOOK" sequence="25"/>
 
     <!-- This Menu Item Must have a parent -->
-    <menuitem id="expense_request_categ" name="Expense Request" parent="inexbook_expense_root" sequence="1"/>
+    <menuitem id="expense_request_categ" name="Expense Request" parent="inexbook_base_root" sequence="1"/>
 
     <!-- This Menu Item must have a parent and an action -->
     <menuitem id="inex_expense_request_action_categ" name="Advance Without Invoice"
