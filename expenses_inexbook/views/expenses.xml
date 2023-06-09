@@ -1,0 +1,178 @@
+<odoo>
+
+    <record id="inex_expense_request_view_tree" model="ir.ui.view">
+        <field name="name">inex_expense_request_view_tree</field>
+        <field name="model">inex.expense.request</field>
+        <field name="arch" type="xml">
+            <tree string="Expense Request">
+                <field name="name" options="show"/>
+                <field name="request_date"  options="show"/>
+                <field name="request_type"  options="show"/>
+                <field name="user_id"  options="show"/>
+                <field name="partner_id"  options="show"/>
+                <field name="beneficiary_type"  options="show"/>
+                <field name="subject"  options="show"/>
+                <field name="amount_total"  options="show"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="deadline_payment"  options="show"/>
+                <field name="project_account_analytic_id"  options="show"/>
+                <field name="payment_way"  options="show"/>
+                <field name="time_readjustment"  options="show"/>
+                <field name="state"  options="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="inex_expense_request_view_form" model="ir.ui.view">
+        <field name="name">inex_expense_request_view_form</field>
+        <field name="model">inex.expense.request</field>
+        <field name="arch" type="xml">
+            <form string="Expense Request">
+
+                   ]
+                <header>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="department_approval, business_leader_approval,accounting_record,finance_approval,president_approval,payment_process,stopped,paid,request_correction"
+                    />
+                </header>
+                <sheet>
+                    <h1><field name="name" readonly="1"/></h1>
+                    <h3><field name="request_type" attrs="{'invisible': [('request_type', '=', True)]}"/></h3>
+                    <h3><field name="request_type"  attrs="{'invisible': [('request_type', '=', False)]}"
+                               readonly="1"/></h3>
+
+                    <group name="top">
+
+                        <group name="left">
+                            <field name="request_date"  attrs="{'invisible': [('request_type', '=', False)]}"/>
+                            <field name="partner_id"  attrs="{'invisible': [('request_type', '=', False)]}"/>
+                            <field name="invoice_date" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
+                            <field name="no_invoice" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
+                            <field name="voucher_type" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
+                            <field name="number_voucher" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
+                            <field name="no_refund_note" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
+                            <field name="product_id" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
+                            <field name="category_id" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
+                            <field name="amount_untaxed" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
+                            <field name="taxes" widget="tag_many2many" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
+                            <field name="amount_to_pay" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
+                            <field name="tips_cash" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
+                            <field name="beneficiary_type"  attrs="{'invisible': [('request_type', '=', False)]}" readonly="1"/>
+                            <field name="beneficiary_type" invisible="1"/>
+                            <field name="request_date"  attrs="{'invisible': [('request_type', '=', False)]}"/>
+                        </group>
+                        <group name="right">
+                            <field name="project_account_analytic_id"  attrs="{'invisible': [('request_type', '=', False)]}"/>
+                            <field name="expense_type" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
+                            <field name="bank_id" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
+                            <field name="transfer_data" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
+                            <field name="currency_id"  attrs="{'invisible': [('request_type', '=', False)]}"/>
+                            <field name="amount_total"  attrs="{'invisible': [('request_type', '=', False)]}"/>
+                            <field name="payment_way"  attrs="{'invisible': [('request_type', '=', False)]}"/>
+                            <field name="deadline_payment"  attrs="{'invisible': [('request_type', '=', False)]}"/>
+                            <field name="time_readjustment"  attrs="{'invisible': [('request_type', '=', False)]}"/>
+                            <field name="summary_invoice" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
+                            <field name="summary_invoice" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
+                        </group>
+
+                        <group name="left_2">
+                            <field name="subject"  attrs="{'invisible': [('request_type', '=', False)]}"/>
+                            <field name="description"  attrs="{'invisible': [('request_type', '=', False)]}"/>
+                        </group>
+
+                    </group>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="inex_expense_request_advance_invoice_action" model="ir.actions.act_window">
+        <field name="name">Advance Without Invoice</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">inex.expense.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('request_type', '=', 'advance_invoice')]</field>
+    </record>
+
+    <record id="inex_expense_request_pay_invoice_without_po_action" model="ir.actions.act_window">
+        <field name="name">Payment With Invoice Without Purchase Order</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">inex.expense.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('request_type', '=', 'pay_invoice_without_po')]</field>
+    </record>
+
+    <record id="inex_expense_request_pay_to_supplier_with_po_action" model="ir.actions.act_window">
+        <field name="name">Payment To Supplier With Purchase Order</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">inex.expense.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('request_type', '=', 'pay_to_supplier_with_po')]</field>
+    </record>
+
+    <record id="inex_expense_request_refund_action" model="ir.actions.act_window">
+        <field name="name">Refund With Invoice</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">inex.expense.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('request_type', '=', 'refund')]</field>
+    </record>
+
+    <record id="inex_expense_request_credit_card_payment_action" model="ir.actions.act_window">
+        <field name="name">Credit Card Payment</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">inex.expense.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('request_type', '=', 'credit_card_payment')]</field>
+    </record>
+
+    <record id="inex_expense_request_replacement_of_petty_cash_action" model="ir.actions.act_window">
+        <field name="name">Replacement Of Petty Cash</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">inex.expense.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('request_type', '=', 'replacement_of_petty_cash')]</field>
+    </record>
+
+    <record id="inexbook_account_record_action" model="ir.actions.act_window">
+        <field name="name">Account Record</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">inex.expense.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('state', '=', 'sent')]</field>
+    </record>
+
+    <record id="inexbook_account_record_action" model="ir.actions.act_window">
+        <field name="name">Account Record</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">inex.expense.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('state', '=', 'sent')]</field>
+    </record>
+
+    <record id="inexbook_presection_action" model="ir.actions.act_window">
+        <field name="name">Preselection</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">inex.expense.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('state', '=', 'sent')]</field>
+    </record>
+
+    <record id="inexbook_payment_process_action" model="ir.actions.act_window">
+        <field name="name">Payment Process</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">inex.expense.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('state', '=', 'sent')]</field>
+    </record>
+
+    <record id="inexbook_replacement_action" model="ir.actions.act_window">
+        <field name="name">Replacement</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">inex.expense.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('state', '=', 'sent')]</field>
+    </record>
+
+</odoo>

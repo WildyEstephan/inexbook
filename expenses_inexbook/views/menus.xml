@@ -1,0 +1,41 @@
+<odoo>
+
+    <!-- This Menu Item will appear in the Upper bar, That's why It needs NO parent or action -->
+    <menuitem id="inexbook_base_root" name="INEXBOOK" sequence="25"/>
+
+    <!-- This Menu Item Must have a parent -->
+    <menuitem id="expense_request_categ" name="Expense Request" parent="inexbook_expense_root" sequence="1"/>
+
+    <!-- This Menu Item must have a parent and an action -->
+    <menuitem id="inex_expense_request_action_categ" name="Advance Without Invoice"
+              parent="" action="inex_expense_request_advance_invoice_action" sequence="1"/>
+
+    <menuitem id="inex_expense_request_pay_invoice_without_po_action_categ" name="Payment With Invoice Without Purchase Order"
+              parent="expense_request_categ" action="inex_expense_request_pay_invoice_without_po_action" sequence="2"/>
+
+    <menuitem id="inex_expense_request_pay_to_supplier_with_po_action_categ" name="Payment To Supplier With Purchase Order"
+              parent="expense_request_categ" action="inex_expense_request_pay_to_supplier_with_po_action" sequence="3"/>
+
+    <menuitem id="inex_expense_request_refund_action_categ" name="Refund With Invoice"
+              parent="expense_request_categ" action="inex_expense_request_refund_action" sequence="4"/>
+
+    <menuitem id="inex_expense_request_credit_card_payment_action_categ" name="Credit Card Payment"
+              parent="expense_request_categ" action="inex_expense_request_credit_card_payment_action" sequence="5"/>
+
+    <menuitem id="inex_expense_request_replacement_of_petty_cash_action_categ" name="Refund With Invoice"
+              parent="expense_request_categ" action="inex_expense_request_replacement_of_petty_cash_action" sequence="6"/>
+
+    <!-- This Menu Item must have a parent and an action -->
+    <menuitem id="inexbook_account_record_action_categ" name="Account Record" parent="inexbook_base_root" action="inexbook_account_record_action" sequence="2"/>
+    <menuitem id="inexbook_presection_action_categ" name="Preselection" parent="inexbook_base_root" action="inexbook_presection_action" sequence="3"/>
+    <menuitem id="inexbook_payment_process_action_categ" name="Payment Process" parent="inexbook_base_root" action="inexbook_payment_process_action" sequence="4"/>
+    <menuitem id="inexbook_replacement_action_categ" name="Replacement" parent="inexbook_base_root" action="inexbook_replacement_action" sequence="5"/>
+
+    <!-- This Menu Item Must have a parent -->
+    <menuitem id="inexbook_config_categ" name="Configuration" parent="inexbook_base_root" sequence="600"/>
+
+    <!-- This Menu Item must have a parent and an action -->
+    <menuitem id="inex_time_readjustment_action_categ" name="Time Readjustment"
+              parent="inexbook_config_categ" action="inex_time_readjustment_action" sequence="5"/>
+
+</odoo>
