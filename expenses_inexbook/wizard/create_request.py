@@ -19,7 +19,8 @@ class CreateRequest(models.TransientModel):
 
 
         ID = self.env['inex.expense.request'].create({
-            'request_type': self.request_type
+            'request_type': self.request_type,
+            'user_id': self.env.user.id
         })
 
         action = self.env['ir.actions.act_window']._for_xml_id('expenses_inexbook.inex_expense_request_action')
