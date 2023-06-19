@@ -25,6 +25,7 @@ class CreateRequest(models.TransientModel):
 
         action = self.env['ir.actions.act_window']._for_xml_id('expenses_inexbook.inex_expense_request_action')
 
-        action["domain"] = [("id", "=", ID.id)]
+        # action["domain"] = [("id", "=", ID.id)]
+        action['res_id'] = ID.id
 
         return action
