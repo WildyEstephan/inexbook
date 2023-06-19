@@ -52,8 +52,6 @@
                 <sheet>
                     <h1><field name="name" readonly="1"/></h1>
                     <h3><field name="request_type" attrs="{'invisible': [('request_type', '=', True)]}"/></h3>
-                    <h3><field name="request_type"  attrs="{'invisible': [('request_type', '=', False)]}"
-                               readonly="1"/></h3>
 
                     <group name="top">
 
