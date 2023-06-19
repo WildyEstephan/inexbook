@@ -31,7 +31,7 @@ class ExpensesRequest(models.Model):
         string='Beneficiary',
         required=False)
     beneficiary_type = fields.Selection(
-        string='Beneficiary_type',
+        string='Beneficiary Type',
         selection=[('employee', 'Employee'),
                    ('supplier', 'Supplier'),
                    ],

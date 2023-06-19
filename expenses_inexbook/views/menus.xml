@@ -16,7 +16,7 @@
 
     <!-- This Menu Item must have a parent and an action -->
     <menuitem id="inexbook_account_record_action_categ" name="Account Record" groups="inexbook_CFO" parent="inexbook_base_root" action="inexbook_account_record_action" sequence="2"/>
-    <menuitem id="inexbook_presection_action_categ" name="Preselection" parent="inexbook_base_root" groups="inexbook_pay_manager" action="inexbook_presection_action" sequence="3"/>
+    <menuitem id="inexbook_presection_action_categ" name="Preselection" parent="inexbook_base_root" groups="inexbook_pay_manager,inexbook_CEO" action="inexbook_presection_action" sequence="3"/>
     <menuitem id="inexbook_payment_process_action_categ" name="Payment Process" groups="inexbook_pay_manager,inexbook_CEO" parent="inexbook_base_root" action="inexbook_payment_process_action" sequence="4"/>
     <menuitem id="inexbook_replacement_action_categ" name="Replacement" groups="inexbook_user" parent="inexbook_base_root" action="inexbook_replacement_action" sequence="5"/>
 

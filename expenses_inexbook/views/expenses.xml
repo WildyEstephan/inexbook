@@ -111,15 +111,7 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">inex.expense.request</field>
         <field name="view_mode">tree,form</field>
-        <field name="domain">[('state', '=', 'sent')]</field>
-    </record>
-
-    <record id="inexbook_account_record_action" model="ir.actions.act_window">
-        <field name="name">Account Record</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">inex.expense.request</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[('state', '=', 'sent')]</field>
+        <field name="domain">[('state', '=', 'business_leader_approval')]</field>
     </record>
 
     <record id="inexbook_presection_action" model="ir.actions.act_window">
@@ -127,7 +119,7 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">inex.expense.request</field>
         <field name="view_mode">tree,form</field>
-        <field name="domain">[('state', '=', 'sent')]</field>
+        <field name="domain">[('state', '=', 'accounting_record')]</field>
     </record>
 
     <record id="inexbook_payment_process_action" model="ir.actions.act_window">
@@ -135,7 +127,7 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">inex.expense.request</field>
         <field name="view_mode">tree,form</field>
-        <field name="domain">[('state', '=', 'sent')]</field>
+        <field name="domain">[('state', '=', 'president_approval')]</field>
     </record>
 
     <record id="inexbook_replacement_action" model="ir.actions.act_window">
@@ -143,7 +135,7 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">inex.expense.request</field>
         <field name="view_mode">tree,form</field>
-        <field name="domain">[('state', '=', 'sent')]</field>
+        <field name="domain">[('state', '=', 'request_correction')]</field>
     </record>
 
 </odoo>
