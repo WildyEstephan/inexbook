@@ -87,7 +87,7 @@
         </field>
     </record>
 
-    <record id="inex_expense_request_advance_invoice_action" model="ir.actions.act_window">
+    <record id="inex_expense_request_action" model="ir.actions.act_window">
         <field name="name">Advance Without Invoice</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">inex.expense.request</field>
