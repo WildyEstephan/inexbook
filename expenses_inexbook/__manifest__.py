@@ -29,6 +29,7 @@
         'security/ir.model.access.csv',
         'views/expenses.xml',
         'views/time_readjustment.xml',
+        'wizard/create_request.xml',
         'views/menus.xml',
     ],
     # only loaded in demonstration mode

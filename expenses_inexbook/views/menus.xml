@@ -7,8 +7,11 @@
     <menuitem id="expense_request_categ" name="Expense Request" parent="inexbook_base_root" sequence="1"/>
 
     <!-- This Menu Item must have a parent and an action -->
+    <menuitem id="create_inex_request_wizard_action_categ" name="Create Request" parent="expense_request_categ" action="create_inex_request_wizard_action" sequence="1"/>
+
+    <!-- This Menu Item must have a parent and an action -->
     <menuitem id="inex_expense_request_action_categ" name="Expense Requests"
-              parent="expense_request_categ" action="inex_expense_request_action" sequence="1"/>
+              parent="expense_request_categ" action="inex_expense_request_action" sequence="2"/>
 
     <!-- This Menu Item must have a parent and an action -->
     <menuitem id="inexbook_account_record_action_categ" name="Account Record" groups="inexbook_CFO" parent="inexbook_base_root" action="inexbook_account_record_action" sequence="2"/>
