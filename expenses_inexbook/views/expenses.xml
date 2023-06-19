@@ -5,20 +5,20 @@
         <field name="model">inex.expense.request</field>
         <field name="arch" type="xml">
             <tree string="Expense Request">
-                <field name="name" options="show"/>
-                <field name="request_date"  options="show"/>
-                <field name="request_type"  options="show"/>
-                <field name="user_id"  options="show"/>
-                <field name="partner_id"  options="show"/>
-                <field name="beneficiary_type"  options="show"/>
-                <field name="subject"  options="show"/>
-                <field name="amount_total"  options="show"/>
+                <field name="name" hide="show"/>
+                <field name="request_date"  hide="show"/>
+                <field name="request_type"  hide="show"/>
+                <field name="user_id"  hide="show"/>
+                <field name="partner_id"  hide="show"/>
+                <field name="beneficiary_type"  hide="show"/>
+                <field name="subject"  hide="show"/>
+                <field name="amount_total"  hide="show"/>
                 <field name="currency_id" invisible="1"/>
-                <field name="deadline_payment"  options="show"/>
-                <field name="project_account_analytic_id"  options="show"/>
-                <field name="payment_way"  options="show"/>
-                <field name="time_readjustment"  options="show"/>
-                <field name="state"  options="show"/>
+                <field name="deadline_payment"  hide="show"/>
+                <field name="project_account_analytic_id"  hide="show"/>
+                <field name="payment_way"  hide="show"/>
+                <field name="time_readjustment"  hide="show"/>
+                <field name="state"  hide="show"/>
             </tree>
         </field>
     </record>
