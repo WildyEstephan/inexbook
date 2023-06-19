@@ -11,7 +11,7 @@
                 </sheet>
 
                 <footer>
-                    <button name="add_filter" string="Ok" type="object" class="btn-primary"/>
+                    <button name="create_request" string="Create" type="object" class="btn-primary"/>
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
