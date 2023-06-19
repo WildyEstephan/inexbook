@@ -4,7 +4,7 @@
         <field name="name">inex_expense_request_view_tree</field>
         <field name="model">inex.expense.request</field>
         <field name="arch" type="xml">
-            <tree string="Expense Request">
+            <tree string="Expense Request" create="false">
                 <field name="name" optional="show"/>
                 <field name="request_date"  optional="show"/>
                 <field name="request_type"  optional="show"/>
