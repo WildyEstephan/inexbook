@@ -1,0 +1,8 @@
+<odoo>
+   <record id="seq_expense_inexbook" model="ir.sequence">
+       <field name="name">Expense INEXBOOK Sequence</field>
+       <field name="code">expense.inex.request</field>
+       <field name="prefix">EXP</field>
+       <field name="padding">5</field>
+   </record>
+</odoo>

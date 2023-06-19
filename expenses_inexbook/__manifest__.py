@@ -20,10 +20,11 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['account', 'hr', 'l10n_do_accounting', 'purchase'],
+    'depends': ['account', 'hr', 'l10n_do_accounting', 'purchase', 'mail'],
 
     # always loaded
     'data': [
+        'data/sequences.xml',
         'security/groups.xml',
         'security/ir.model.access.csv',
         'views/expenses.xml',

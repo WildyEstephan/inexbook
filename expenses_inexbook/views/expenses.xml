@@ -28,9 +28,23 @@
         <field name="model">inex.expense.request</field>
         <field name="arch" type="xml">
             <form string="Expense Request">
-
-                   ]
                 <header>
+                    <button name="approve_inexbook_manager" type="object" groups="inexbook_manager"
+                            string="Approve by Manager" states="sent"/>
+                    <button name="approve_inexbook_business_leader" type="object" groups="inexbook_business_leader"
+                            string="Approve by Business Leader" states="department_approval"/>
+                    <button name="approve_accounting" groups="account.group_account_manager" type="object"
+                            string="Approve by Accounting" states="business_leader_approval"/>
+                    <button name="approve_CFO" type="object" groups="inexbook_CFO"
+                            string="Approve by CFO"  states="accounting_record"/>
+                    <button name="approve_CEO" type="object" groups="inexbook_CEO"
+                            string="Approve by CEO"  states="finance_approval" />
+                    <button name="pay_this" type="object" groups="inexbook_pay_manager"
+                            string="Pay" states="president_approval"/>
+
+                    <button name="stop_this" type="object" string="Stop"/>
+                    <button name="cancel_this" type="object" string="Cancel"/>
+                    <button name="request_corrections" type="object" string="Request for Corrections"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="department_approval, business_leader_approval,accounting_record,finance_approval,president_approval,payment_process,stopped,paid,request_correction"
                     />
@@ -88,51 +102,10 @@
     </record>
 
     <record id="inex_expense_request_action" model="ir.actions.act_window">
-        <field name="name">Advance Without Invoice</field>
+        <field name="name">Expense Request</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">inex.expense.request</field>
         <field name="view_mode">tree,form</field>
-        <field name="domain">[('request_type', '=', 'advance_invoice')]</field>
-    </record>
-
-    <record id="inex_expense_request_pay_invoice_without_po_action" model="ir.actions.act_window">
-        <field name="name">Payment With Invoice Without Purchase Order</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">inex.expense.request</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[('request_type', '=', 'pay_invoice_without_po')]</field>
-    </record>
-
-    <record id="inex_expense_request_pay_to_supplier_with_po_action" model="ir.actions.act_window">
-        <field name="name">Payment To Supplier With Purchase Order</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">inex.expense.request</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[('request_type', '=', 'pay_to_supplier_with_po')]</field>
-    </record>
-
-    <record id="inex_expense_request_refund_action" model="ir.actions.act_window">
-        <field name="name">Refund With Invoice</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">inex.expense.request</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[('request_type', '=', 'refund')]</field>
-    </record>
-
-    <record id="inex_expense_request_credit_card_payment_action" model="ir.actions.act_window">
-        <field name="name">Credit Card Payment</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">inex.expense.request</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[('request_type', '=', 'credit_card_payment')]</field>
-    </record>
-
-    <record id="inex_expense_request_replacement_of_petty_cash_action" model="ir.actions.act_window">
-        <field name="name">Replacement Of Petty Cash</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">inex.expense.request</field>
-        <field name="view_mode">tree,form</field>
-        <field name="domain">[('request_type', '=', 'replacement_of_petty_cash')]</field>
     </record>
 
     <record id="inexbook_account_record_action" model="ir.actions.act_window">

@@ -3,6 +3,7 @@ from odoo import api, fields, models, _
 
 class ExpensesRequest(models.Model):
     _name = 'inex.expense.request'
+    _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin']
     _description = 'Expenses Request'
 
     name = fields.Char(
@@ -10,7 +11,7 @@ class ExpensesRequest(models.Model):
         required=False)
     request_date = fields.Date(
         string='Request Date',
-        required=False, default=fields.Date.today())
+        required=False, default=fields.Date.today(), tracking=True)
     request_type = fields.Selection(
         string='Request Type',
         selection=[('advance_invoice', 'Advance Without Invoice'),
@@ -20,7 +21,7 @@ class ExpensesRequest(models.Model):
                    ('credit_card_payment', 'Credit Card Payment'),
                    ('replacement_of_petty_cash', 'Replacement Of Petty Cash'),
                    ],
-        required=True, )
+        required=True, tracking=True)
     user_id = fields.Many2one(
         comodel_name='res.users',
         string='Requester',
@@ -37,7 +38,7 @@ class ExpensesRequest(models.Model):
         required=False, )
     subject = fields.Char(
         string="Subject",
-        required=False)
+        required=False, tracking=True)
     description = fields.Text(
         string="Description",
         required=False)
@@ -63,7 +64,7 @@ class ExpensesRequest(models.Model):
                    ('cancelled', 'Cancelled'),
                    ('request_correction', 'Request for Corrections'),
                    ],
-        required=False, default='request')
+        required=False, default='request', tracking=True)
     deadline_payment = fields.Date(
         string='Deadline Payment',
         required=False)
@@ -166,6 +167,44 @@ class ExpensesRequest(models.Model):
         inverse_name='expense_id',
         string='Details',
         required=False)
+
+    @api.model
+    def create(self, vals):
+        if vals.get('name', _('New')) == _('New'):
+            vals['name'] = self.env['ir.sequence'].next_by_code(
+                'expense.inex.request') or _('New')
+        res = super(ExpensesRequest, self).create(vals)
+        return res
+
+    def sent(self):
+        self.state = 'sent'
+
+    def approve_inexbook_manager(self):
+        self.state = 'department_approval'
+
+    def approve_inexbook_business_leader(self):
+        self.state = 'business_leader_approval'
+
+    def approve_accounting(self):
+        self.state = 'accounting_record'
+
+    def approve_CFO(self):
+        self.state = 'finance_approval'
+
+    def approve_CEO(self):
+        self.state = 'president_approval'
+
+    def pay_this(self):
+        self.state = 'payment_process'
+
+    def stop_this(self):
+        self.state = 'stopped'
+
+    def cancel_this(self):
+        self.state = 'cancelled'
+
+    def request_corrections(self):
+        self.state = 'request_correction'
 
 
 
