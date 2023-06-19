@@ -44,11 +44,11 @@ class ExpensesRequest(models.Model):
         required=False)
     amount_total = fields.Monetary(
         string='Amount Total',
-        required=True)
+        required=False)
     currency_id = fields.Many2one(
         comodel_name='res.currency',
         string='Currency',
-        required=True)
+        required=False)
     state = fields.Selection(
         string='State',
         selection=[('request', 'Request'),
@@ -78,7 +78,7 @@ class ExpensesRequest(models.Model):
                    ('transaction', 'Transaction'),
                    ('card', 'Credit Card'),
                    ],
-        required=True, )
+        required=False, )
     time_readjustment = fields.Many2one(
         comodel_name='inex.time.readjustment',
         string='Time Readjustment',
