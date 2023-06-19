@@ -1,0 +1,43 @@
+<odoo>
+
+    <record model="ir.module.category" id="expenses_inexbook_groups">
+         <field name="name">INEXBOOK</field>
+         <field name="description">User access level for INEXBOOK module</field>
+         <field name="sequence">20</field>
+    </record>
+
+    <record id="inexbook_user" model="res.groups">
+        <field name="name">Requester</field>
+        <field name="category_id" ref="expenses_inexbook_groups"/>
+    </record>
+    <record id="inexbook_manager" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="category_id" ref="expenses_inexbook_groups"/>
+        <field name="implied_ids" eval="[(4, ref('inexbook_user'))]"/>
+    </record>
+    <record id="inexbook_business_leader" model="res.groups">
+        <field name="name">Business Leader</field>
+        <field name="category_id" ref="expenses_inexbook_groups"/>
+        <field name="implied_ids" eval="[(4, ref('inexbook_manager))]"/>
+    </record>
+    <record id="inexbook_pay_manager" model="res.groups">
+        <field name="name">Pay Manager</field>
+        <field name="category_id" ref="expenses_inexbook_groups"/>
+        <field name="implied_ids" eval="[(4, ref('inexbook_manager))]"/>
+    </record>
+    <record id="inexbook_CFO" model="res.groups">
+        <field name="name">CFO</field>
+        <field name="category_id" ref="expenses_inexbook_groups"/>
+        <field name="implied_ids" eval="[(4, ref('inexbook_manager))]"/>
+    </record>
+    <record id="inexbook_CEO" model="res.groups">
+        <field name="name">CEO</field>
+        <field name="category_id" ref="expenses_inexbook_groups"/>
+        <field name="implied_ids" eval="[(4, ref('inexbook_manager))]"/>
+    </record>
+    <record id="inexbook_administrator" model="res.groups">
+        <field name="name">Administrator</field>
+        <field name="category_id" ref="expenses_inexbook_groups"/>
+        <field name="implied_ids" eval="[(4, ref('inexbook_manager))]"/>
+    </record>
+</odoo>
