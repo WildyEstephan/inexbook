@@ -29,17 +29,17 @@
         <field name="arch" type="xml">
             <form string="Expense Request">
                 <header>
-                    <button name="approve_inexbook_manager" type="object" groups="inexbook_manager"
+                    <button name="approve_inexbook_manager" type="object" groups="expenses_inexbook.inexbook_manager"
                             string="Approve by Manager" states="sent"/>
-                    <button name="approve_inexbook_business_leader" type="object" groups="inexbook_business_leader"
+                    <button name="approve_inexbook_business_leader" type="object" groups="expenses_inexbook.inexbook_business_leader"
                             string="Approve by Business Leader" states="department_approval"/>
                     <button name="approve_accounting" groups="account.group_account_manager" type="object"
                             string="Approve by Accounting" states="business_leader_approval"/>
-                    <button name="approve_CFO" type="object" groups="inexbook_CFO"
+                    <button name="approve_CFO" type="object" groups="expenses_inexbook.inexbook_CFO"
                             string="Approve by CFO"  states="accounting_record"/>
-                    <button name="approve_CEO" type="object" groups="inexbook_CEO"
+                    <button name="approve_CEO" type="object" groups="expenses_inexbook.inexbook_CEO"
                             string="Approve by CEO"  states="finance_approval" />
-                    <button name="pay_this" type="object" groups="inexbook_pay_manager"
+                    <button name="pay_this" type="object" groups="expenses_inexbook.inexbook_pay_manager"
                             string="Pay" states="president_approval"/>
 
                     <button name="stop_this" type="object" string="Stop"/>
