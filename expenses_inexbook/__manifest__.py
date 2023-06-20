@@ -20,7 +20,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['account', 'hr', 'l10n_do_accounting', 'purchase', 'mail'],
+    'depends': ['account', 'hr', 'l10n_do_accounting', 'purchase', 'mail', 'project'],
 
     # always loaded
     'data': [
@@ -28,6 +28,7 @@
         'security/groups.xml',
         'security/ir.model.access.csv',
         'views/expenses.xml',
+        'views/credit_card.xml',
         'views/time_readjustment.xml',
         'wizard/create_request.xml',
         'views/menus.xml',

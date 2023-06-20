@@ -1,0 +1,22 @@
+<odoo>
+
+    <record id="credit_card_view_tree" model="ir.ui.view">
+        <field name="name">credit_card_view_tree</field>
+        <field name="model">inex.credit.card</field>
+        <field name="arch" type="xml">
+            <tree string="Credit Card">
+                <field name="name"/>
+                <field name="assigned_to"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="credit_card_view_action" model="ir.actions.act_window">
+        <field name="name">Credit Card</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">inex.credit.card</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+
+</odoo>

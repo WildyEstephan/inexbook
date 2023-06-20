@@ -26,5 +26,11 @@
     <!-- This Menu Item must have a parent and an action -->
     <menuitem id="inex_time_readjustment_action_categ" name="Time Readjustment"
               parent="inexbook_config_categ" action="inex_time_readjustment_action" sequence="5"/>
+    <!-- This Menu Item must have a parent and an action -->
+    <menuitem id="action_account_analytic_account_form_categ" name="Project" parent="inexbook_config_categ" action="analytic.action_account_analytic_account_form" sequence="1"/>
+
+    <!-- This Menu Item must have a parent and an action -->
+    <menuitem id="credit_card_view_action_categ" name="Credit Card"
+              parent="inexbook_config_categ" action="credit_card_view_action" sequence="2"/>
 
 </odoo>
