@@ -25,7 +25,9 @@ class CreateRequest(models.TransientModel):
 
         action = self.env['ir.actions.act_window']._for_xml_id('expenses_inexbook.inex_expense_request_action')
 
-        # action["domain"] = [("id", "=", ID.id)]
+        form_view = [(self.env.ref('expenses_inexbook.inex_expense_request_view_form').id, 'form')]
+
+        action['views'] = form_view
         action['res_id'] = ID.id
 
         return action
