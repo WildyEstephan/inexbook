@@ -27,20 +27,23 @@
         <field name="name">inex_expense_request_view_form</field>
         <field name="model">inex.expense.request</field>
         <field name="arch" type="xml">
-            <form string="Expense Request">
+            <form string="Expense Request" create="false">
                 <header>
-                    <button name="approve_inexbook_manager" type="object" groups="expenses_inexbook.inexbook_manager"
+                    <button name="send_this" class="oe_highlight" type="object" string="Send" states="request"/>
+                    <button name="approve_inexbook_manager" class="oe_highlight" type="object" groups="expenses_inexbook.inexbook_manager"
                             string="Approve by Manager" states="sent"/>
-                    <button name="approve_inexbook_business_leader" type="object" groups="expenses_inexbook.inexbook_business_leader"
+                    <button name="approve_inexbook_business_leader" class="oe_highlight" type="object" groups="expenses_inexbook.inexbook_business_leader"
                             string="Approve by Business Leader" states="department_approval"/>
-                    <button name="approve_accounting" groups="account.group_account_manager" type="object"
-                            string="Approve by Accounting" states="business_leader_approval"/>
-                    <button name="approve_CFO" type="object" groups="expenses_inexbook.inexbook_CFO"
-                            string="Approve by CFO"  states="accounting_record"/>
-                    <button name="approve_CEO" type="object" groups="expenses_inexbook.inexbook_CEO"
-                            string="Approve by CEO"  states="finance_approval" />
-                    <button name="pay_this" type="object" groups="expenses_inexbook.inexbook_pay_manager"
-                            string="Pay" states="president_approval"/>
+                    <button name="approve_accounting" class="oe_highlight" groups="account.group_account_manager" type="object"
+                            string="Approve by Accounting"  states="business_leader_approval"/>
+<!--                    <button name="approve_CFO" class="oe_highlight" type="object" groups="expenses_inexbook.inexbook_CFO"-->
+<!--                            string="Approve by CFO"  states="accounting_record"/>-->
+                    <button name="approve_CEO" class="oe_highlight" type="object" groups="expenses_inexbook.inexbook_CEO"
+                            string="Approve by CEO"  states="accounting_record" />
+                    <button name="payment_process_this" class="oe_highlight" type="object" groups="expenses_inexbook.inexbook_pay_manager"
+                            string="Payment Process" states="president_approval"/>
+                    <button name="pay_this" class="oe_highlight" type="object" groups="expenses_inexbook.inexbook_pay_manager"
+                            string="Pay" states="payment_process"/>
 
                     <button name="stop_this" type="object" string="Stop"/>
                     <button name="cancel_this" type="object" string="Cancel"/>
@@ -50,49 +53,99 @@
                     />
                 </header>
                 <sheet>
+                     <div class="oe_button_box" name="button_box">
+                        <button name="action_view_document"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-pencil-square-o">
+                            <field name="count_document" widget="statinfo" string="Documents"/>
+                        </button>
+                    </div>
                     <h1><field name="name" readonly="1"/></h1>
-                    <h3><field name="request_type" attrs="{'invisible': [('request_type', '=', True)]}"/></h3>
+                    <h3><field name="request_type" readonly="1"/></h3>
 
                     <group name="top">
 
                         <group name="left">
-                            <field name="request_date"  attrs="{'invisible': [('request_type', '=', False)]}"/>
-                            <field name="partner_id"  attrs="{'invisible': [('request_type', '=', False)]}"/>
-                            <field name="invoice_date" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
-                            <field name="no_invoice" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
-                            <field name="voucher_type" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
-                            <field name="number_voucher" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
-                            <field name="no_refund_note" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
-                            <field name="product_id" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
-                            <field name="category_id" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
-                            <field name="amount_untaxed" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
-                            <field name="taxes" widget="tag_many2many" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
-                            <field name="amount_to_pay" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
-                            <field name="tips_cash" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
-                            <field name="beneficiary_type"  attrs="{'invisible': [('request_type', '=', False)]}" readonly="1"/>
-                            <field name="beneficiary_type" invisible="1"/>
-                            <field name="request_date"  attrs="{'invisible': [('request_type', '=', False)]}"/>
+                            <field name="request_date" readonly="1" />
+                            <field name="user_id" readonly="1" />
+                            <field name="partner_id" required="1" />
+                            <field name="purchase_id" attrs="{'invisible': [('request_type', '!=', 'pay_to_supplier_with_po')], 'required': [('request_type', '=', 'pay_to_supplier_with_po')]}"/>
+                            <field name="credit_card_id" attrs="{'invisible': [('request_type', '!=', 'credit_card_payment')], 'required': [('request_type', '=', 'credit_card_payment')]}"/>
+                            <field name="invoice_date" attrs="{'invisible': [('request_type', 'not in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))], 'required': [('request_type', 'in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))]}"/>
+                            <field name="no_invoice" attrs="{'invisible': [('request_type', 'not in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))], 'required': [('request_type', 'in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))]}"/>
+                            <field name="voucher_type" attrs="{'invisible': [('request_type', 'not in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))], 'required': [('request_type', 'in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))]}"/>
+                            <field name="number_voucher" attrs="{'invisible': [('request_type', 'not in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))], 'required': [('request_type', 'in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))]}"/>
+                            <field name="no_refund_note" attrs="{'invisible': [('request_type', 'not in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))]}"/>
+                            <field name="product_id" attrs="{'invisible': [('request_type', 'not in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))], 'required': [('request_type', 'in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))]}"/>
+                            <field name="category_id" attrs="{'invisible': [('request_type', 'not in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))], 'required': [('request_type', 'in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))]}"/>
+                            <field name="amount_untaxed" attrs="{'invisible': [('request_type', 'not in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))], 'required': [('request_type', 'in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))]}"/>
+                            <field name="taxes" widget="many2many_tags" attrs="{'invisible': [('request_type', 'not in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))], 'required': [('request_type', 'in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))]}"/>
+                            <field name="subject" attrs="{'invisible': [('request_type', 'not in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))], 'required': [('request_type', 'in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))]}"/>
+                            <field name="payment_way" attrs="{'invisible': [('request_type', 'not in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))], 'required': [('request_type', 'in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))]}"/>
+                            <field name="amount_to_pay" attrs="{'invisible': [('request_type', 'not in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))]}"/>
+                            <field name="tips_cash" attrs="{'invisible': [('request_type', 'not in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))]}"/>
+                            <field name="beneficiary_type" attrs="{'invisible': [('request_type', 'not in', ('advance_invoice', 'refund'))]}"/>
                         </group>
                         <group name="right">
-                            <field name="project_account_analytic_id"  attrs="{'invisible': [('request_type', '=', False)]}"/>
-                            <field name="expense_type" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
-                            <field name="bank_id" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
-                            <field name="transfer_data" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
-                            <field name="currency_id"  attrs="{'invisible': [('request_type', '=', False)]}"/>
-                            <field name="amount_total"  attrs="{'invisible': [('request_type', '=', False)]}"/>
-                            <field name="payment_way"  attrs="{'invisible': [('request_type', '=', False)]}"/>
-                            <field name="deadline_payment"  attrs="{'invisible': [('request_type', '=', False)]}"/>
-                            <field name="time_readjustment"  attrs="{'invisible': [('request_type', '=', False)]}"/>
-                            <field name="summary_invoice" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
-                            <field name="summary_invoice" attrs="{'invisible': [('request_type', 'in', ('advance_invoice', 'pay_invoice_without_po'))]}"/>
+                            <group>
+                                <field name="project_account_analytic_id" />
+                                <field name="expense_type" attrs="{'invisible': [('request_type', 'not in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))], 'required': [('request_type', 'in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))]}"/>
+                                <field name="bank_id" attrs="{'invisible': [('request_type', 'not in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))], 'required': [('request_type', 'in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))]}"/>
+                                <field name="transfer_data" attrs="{'invisible': [('request_type', 'not in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))]}"/>
+                                <field name="currency_id"  attrs="{'invisible': [('request_type', 'not in', ('advance_invoice', 'refund'))], 'required': [('request_type', 'in', ('advance_invoice', 'refund'))]}"/>
+                                <field name="amount_total"  attrs="{'invisible': [('request_type', 'not in', ('advance_invoice', 'refund'))], 'required': [('request_type', 'in', ('advance_invoice', 'refund'))]}"/>
+                                <field name="payment_way"  attrs="{'invisible': [('request_type', 'not in', ('advance_invoice', 'refund'))], 'required': [('request_type', 'in', ('advance_invoice', 'refund'))]}"/>
+                                <field name="bank_id" attrs="{'invisible': [('request_type', '!=', 'refund')], 'required': [('payment_way', '=', 'transaction')]}"/>
+                                <field name="deadline_payment"  required="1"/>
+                                <field name="filename_attached_document" invisible="1"/>
+                                <field name="attached_document" widget="binary" filename="filename_attached_document" attrs="{'invisible': [('request_type', 'not in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))], 'required': [('request_type', 'in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))]}"/>
+                                <field name="time_readjustment"  required="1"/>
+                            </group>
+                            <group string="Invoice Summary"  attrs="{'invisible': [('request_type', 'not in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))]}">
+                                <field name="tax_totals_json"  nolabel="1" widget="account-tax-totals-field" attrs="{'invisible': [('request_type', 'not in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))], 'required': [('request_type', 'in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))]}"/>
+                            </group>
+                            <br/>
+                            <group string="Credit Notes"  attrs="{'invisible': [('request_type', 'not in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))]}">
+                                <field name="no_refund_note_html" nolabel="1" />
+                            </group>
+                            <br/>
+                            <group  attrs="{'invisible': [('request_type', 'not in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))]}">
+                                <field name="amount_to_pay_net"/>
+                            </group>
                         </group>
 
-                        <group name="left_2">
-                            <field name="subject"  attrs="{'invisible': [('request_type', '=', False)]}"/>
-                            <field name="description"  attrs="{'invisible': [('request_type', '=', False)]}"/>
-                        </group>
-
+                        <field name="subject" attrs="{'invisible': [('request_type', 'not in', ('advance_invoice', 'refund'))], 'required': [('request_type', '=', 'advance_invoice')]}"/>
+                        <field name="description"  attrs="{'invisible': [('request_type', '!=', 'advance_invoice')], 'required': [('request_type', '=', 'advance_invoice')]}"/>
                     </group>
+
+                    <notebook attrs="{'invisible': [('request_type', 'not in', ('credit_card_payment', 'refund', 'replacement_of_petty_cash'))]}">
+                        <page name="details" string="Details">
+                            <field name="detail_ids">
+                                <tree editable="bottom">
+                                    <field name="partner_id"/>
+                                    <field name="name"/>
+                                    <field name="invoice_date"/>
+                                    <field name="no_invoice"/>
+                                    <field name="voucher_type"/>
+                                    <field name="no_refund_note"/>
+                                    <field name="product_id"/>
+                                    <field name="category_id"/>
+                                    <field name="currency_id"/>
+                                    <field name="amount_untaxed"/>
+                                    <field name="taxes" widget="many2many_tags"/>
+                                    <field name="payment_way"/>
+                                    <field name="amount_to_pay"/>
+                                    <field name="tips_cash"/>
+                                    <field name="expense_type"/>
+                                    <field name="filename_document" invisible="1"/>
+                                    <field name="file_document" widget="binary" filename="filename_document"/>
+                                    <field name="bank_id"/>
+                                    <field name="transfer_data"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
 
                 </sheet>
             </form>
@@ -127,7 +180,7 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">inex.expense.request</field>
         <field name="view_mode">tree,form</field>
-        <field name="domain">[('state', '=', 'president_approval')]</field>
+        <field name="domain">[('state', 'in', ('president_approval', 'payment_process', 'paid'))]</field>
     </record>
 
     <record id="inexbook_replacement_action" model="ir.actions.act_window">

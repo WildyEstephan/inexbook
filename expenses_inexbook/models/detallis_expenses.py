@@ -5,33 +5,37 @@ class DetallisExpenses(models.Model):
     _description = 'Detallis Expenses'
 
     name = fields.Char(
-        string='Name',
-        required=False)
+        string='Description',
+        required=True)
     partner_id = fields.Many2one(
         comodel_name='res.partner',
         string='Supplier',
-        required=False)
+        required=True)
     invoice_date = fields.Date(
         string='Invoice Date',
-        required=False)
+        required=True)
     no_invoice = fields.Char(
         string='No. Invoice',
-        required=False)
+        required=True)
     voucher_type = fields.Many2one(
         comodel_name='l10n_latam.document.type',
         string='Voucher Type',
-        required=False)
+        required=True)
     no_refund_note = fields.Text(
         string="No. Refund Note",
         required=False)
     product_id = fields.Many2one(
         comodel_name='product.product',
         string='Product',
-        required=False)
+        required=True)
     category_id = fields.Many2one(
         comodel_name='product.category',
         string='Category',
-        required=False)
+        required=True)
+    currency_id = fields.Many2one(
+        comodel_name='res.currency',
+        string='Currency',
+        required=False, related='expense_id.currency_id')
     amount_untaxed = fields.Float(
         string='Amount Untaxed',
         required=False)
@@ -63,16 +67,13 @@ class DetallisExpenses(models.Model):
     filename_document = fields.Char(
         string='Filename Document',
         required=False)
-    file_document = fields.Binary(string="Document",  )
+    file_document = fields.Binary(string="Document",  required=True)
     bank_id = fields.Many2one(
         comodel_name='res.partner.bank',
         string='Bank Account',
-        required=False, domain="[('partner_id', '=', partner_id)]")
+        required=True, domain="[('partner_id', '=', partner_id)]")
     transfer_data = fields.Char(
         string='Transfer Data',
-        required=False)
-    summay_invoice = fields.Text(
-        string="Summay Invoice",
         required=False)
     payment_way = fields.Selection(
         string='Payment Way',

@@ -30,6 +30,7 @@
         'views/expenses.xml',
         'views/credit_card.xml',
         'views/time_readjustment.xml',
+        'views/document_expenses.xml',
         'wizard/create_request.xml',
         'views/menus.xml',
     ],
