@@ -1,0 +1,26 @@
+<odoo>
+    <data>
+        <record id="view_account_payment_form_inherited" model="ir.ui.view">
+            <field name="name">view.account.payment.form.inherited</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='is_internal_transfer']" position="after">
+                    <field name="txt_binary" readonly="1"/>
+                    <field name="txt_filename"/>
+                    <field name="header_sequence"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.actions.server" id="payment_txt_reports.action_server">
+            <field name="name">Descargar Txt</field>
+            <field name="model_id" ref="model_account_payment"/>
+            <field name="binding_model_id" ref="model_account_payment"/>
+            <field name="state">code</field>
+            <field name="code">
+                action = record.download_txt()
+            </field>
+        </record>
+    </data>
+</odoo>
