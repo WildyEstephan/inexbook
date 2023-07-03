@@ -32,6 +32,7 @@
         'views/time_readjustment.xml',
         'views/document_expenses.xml',
         'wizard/create_request.xml',
+        'wizard/payment_journal.xml',
         'views/menus.xml',
     ],
     # only loaded in demonstration mode

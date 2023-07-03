@@ -21,6 +21,9 @@ class DetallisExpenses(models.Model):
         comodel_name='l10n_latam.document.type',
         string='Voucher Type',
         required=True)
+    number_voucher = fields.Char(
+        string='Number Voucher',
+        required=True)
     no_refund_note = fields.Text(
         string="No. Refund Note",
         required=False)
@@ -44,7 +47,15 @@ class DetallisExpenses(models.Model):
         string='Taxes')
     amount_to_pay = fields.Float(
         string='Amount to pay',
-        required=False)
+        required=False, compute='_compute_amount_to_pay')
+
+    @api.depends('amount_untaxed', 'taxes')
+    def _compute_amount_to_pay(self):
+        for rec in self:
+            taxes = rec.taxes.compute_all(rec.amount_untaxed, rec.currency_id, 1,
+                                          product=rec.product_id, partner=rec.partner_id)
+            rec.amount_to_pay = taxes['total_included']
+
     tips_cash = fields.Char(
         string='Tips Cash',
         required=False)
@@ -71,7 +82,7 @@ class DetallisExpenses(models.Model):
     bank_id = fields.Many2one(
         comodel_name='res.partner.bank',
         string='Bank Account',
-        required=True, domain="[('partner_id', '=', partner_id)]")
+        required=False, domain="[('partner_id', '=', partner_id)]")
     transfer_data = fields.Char(
         string='Transfer Data',
         required=False)

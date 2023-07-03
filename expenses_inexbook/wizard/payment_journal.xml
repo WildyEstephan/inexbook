@@ -1,0 +1,30 @@
+<odoo>
+
+    <record id="inex_payment_journal_wizard_view_form" model="ir.ui.view">
+        <field name="name">inex_payment_journal_wizard_view_form</field>
+        <field name="model">inex.payment.journal.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Create Request">
+                <sheet>
+                    <h4>Selecciona el diario con que deseas hacer el pago</h4>
+                    <h1><field name="journal_id"/></h1>
+                </sheet>
+
+                <footer>
+                    <button name="create_payment" string="Create" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="inex_payment_journal_wizard_action" model="ir.actions.act_window">
+        <field name="name">Create Payment</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">inex.payment.journal.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="create_inex_request_wizard_view_form"/>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

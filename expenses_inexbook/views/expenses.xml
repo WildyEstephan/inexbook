@@ -91,7 +91,7 @@
                             <group>
                                 <field name="project_account_analytic_id" />
                                 <field name="expense_type" attrs="{'invisible': [('request_type', 'not in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))], 'required': [('request_type', 'in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))]}"/>
-                                <field name="bank_id" attrs="{'invisible': [('request_type', 'not in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))], 'required': [('request_type', 'in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))]}"/>
+                                <field name="bank_id" attrs="{'invisible': [('request_type', 'not in', ('pay_invoice_without_po', 'pay_to_supplier_with_po', 'advance_invoice'))], 'required': [('request_type', 'in', ('pay_invoice_without_po', 'pay_to_supplier_with_po', 'advance_invoice'))]}"/>
                                 <field name="transfer_data" attrs="{'invisible': [('request_type', 'not in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))]}"/>
                                 <field name="currency_id"  attrs="{'invisible': [('request_type', 'not in', ('advance_invoice', 'refund'))], 'required': [('request_type', 'in', ('advance_invoice', 'refund'))]}"/>
                                 <field name="amount_total"  attrs="{'invisible': [('request_type', 'not in', ('advance_invoice', 'refund'))], 'required': [('request_type', 'in', ('advance_invoice', 'refund'))]}"/>
@@ -103,7 +103,11 @@
                                 <field name="time_readjustment"  required="1"/>
                             </group>
                             <group string="Invoice Summary"  attrs="{'invisible': [('request_type', 'not in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))]}">
-                                <field name="tax_totals_json"  nolabel="1" widget="account-tax-totals-field" attrs="{'invisible': [('request_type', 'not in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))], 'required': [('request_type', 'in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))]}"/>
+                                <field name="tax_totals_json"  nolabel="1" widget="account-tax-totals-field" attrs="{'invisible': [('request_type', '=', 'pay_invoice_without_po')]}"/>
+                                <field name="amount_total_po"/>
+                                <field name="amount_invoiced_po"/>
+                                <field name="amount_paid_po"/>
+                                <field name="balance_po_paid"/>
                             </group>
                             <br/>
                             <group string="Credit Notes"  attrs="{'invisible': [('request_type', 'not in', ('pay_invoice_without_po', 'pay_to_supplier_with_po'))]}">
@@ -128,22 +132,18 @@
                                     <field name="invoice_date"/>
                                     <field name="no_invoice"/>
                                     <field name="voucher_type"/>
-                                    <field name="no_refund_note"/>
+                                    <field name="number_voucher"/>
                                     <field name="product_id"/>
                                     <field name="category_id"/>
-                                    <field name="currency_id"/>
+                                    <field name="currency_id" invisible="1"/>
                                     <field name="amount_untaxed"/>
                                     <field name="taxes" widget="many2many_tags"/>
-                                    <field name="payment_way"/>
-                                    <field name="amount_to_pay"/>
-                                    <field name="tips_cash"/>
-                                    <field name="expense_type"/>
                                     <field name="filename_document" invisible="1"/>
                                     <field name="file_document" widget="binary" filename="filename_document"/>
-                                    <field name="bank_id"/>
-                                    <field name="transfer_data"/>
                                 </tree>
                             </field>
+
+                            <field name="tax_totals_json" colspan="2"  nolabel="1" widget="account-tax-totals-field" attrs="{'invisible': [('request_type', '=', 'pay_invoice_without_po')]}"/>
                         </page>
                     </notebook>
 

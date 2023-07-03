@@ -193,6 +193,39 @@ class ExpensesRequest(models.Model):
         comodel_name='purchase.order',
         string='Purchase',
         required=False)
+    amount_total_po = fields.Float(
+        string='Amount Total PO',
+        required=False, compute='_compute_amounts_po')
+    amount_invoiced_po = fields.Float(
+        string='Amount Invoiced', 
+        required=False, compute='_compute_amounts_po')
+    amount_paid_po = fields.Float(
+        string='Amount Paid',
+        required=False, compute='_compute_amounts_po')
+    balance_po_paid = fields.Float(
+        string='Balance (PO - Paid)',
+        required=False, compute='_compute_amounts_po')
+
+    @api.depends('purchase_id')
+    def _compute_amounts_po(self):
+        for rec in self:
+
+            rec.amount_total_po = rec.purchase_id.amount_total
+            total = 0
+            total_paid = 0
+            for invoice in rec.purchase_id.invoice_ids.filtered(lambda r: r.state=='posted'):
+                total += abs(invoice.amount_total_in_currency_signed)
+
+                if invoice.payment_state in ('paid', 'in_payment', 'partial'):
+                    for payment_val in invoice.sudo()._get_reconciled_info_JSON_values():
+                        total_paid += payment_val['amount']
+
+            rec.amount_invoiced_po = total
+
+            rec.amount_paid_po = total_paid
+
+            rec.balance_po_paid = rec.amount_total_po - rec.amount_paid_po
+    
     detail_ids = fields.One2many(
         comodel_name='inex.expense.detail',
         inverse_name='expense_id',
@@ -204,6 +237,38 @@ class ExpensesRequest(models.Model):
         comodel_name='inex.credit.card',
         string='Credit Card',
         required=False)
+    amount_untaxed_total = fields.Float(
+        string='Amount Untaxed Total',
+        required=False, compute='_compute_total_amounts')
+    amount_to_pay_total = fields.Float(
+        string='Amount to Pay Total',
+        required=False, compute='_compute_total_amounts')
+
+
+    payment_ids = fields.One2many(
+        comodel_name='account.payment',
+        inverse_name='inex_expense_id',
+        string='Payments',
+        required=False)
+    invoice_ids = fields.One2many(
+        comodel_name='account.move',
+        inverse_name='inex_expense_id',
+        string='Invoices',
+        required=False)
+
+    @api.depends('detail_ids')
+    def _compute_total_amounts(self):
+        for rec in self:
+            amount_untaxed_total = 0.0
+            amount_to_pay_total = 0.0
+
+            for line in rec.detail_ids:
+                amount_to_pay_total += line.amount_to_pay
+                amount_untaxed_total += line.amount_untaxed
+
+            rec.amount_to_pay_total = amount_to_pay_total
+            rec.amount_untaxed_total = amount_untaxed_total
+
 
     @api.depends('number_voucher')
     def _compute_no_refund_note(self):
@@ -213,7 +278,8 @@ class ExpensesRequest(models.Model):
 
         for rec in self:
             if rec.number_voucher:
-                credit_note = self.env['account.move'].search([('l10n_do_origin_ncf', '=', rec.number_voucher)])
+                credit_note = self.env['account.move'].search([('l10n_do_origin_ncf', '=', rec.number_voucher),
+                                                               ('partner_id', '=', rec.partner_id.id)])
 
                 list_refund_note = ""
                 list_refund_note_hmtl = ""
@@ -244,10 +310,11 @@ class ExpensesRequest(models.Model):
 
     @api.depends('amount_on_credit', 'amount_to_pay')
     def _compute_amount_to_pay_net(self):
-
         for rec in self:
-            rec.amount_to_pay_net = rec.amount_to_pay - rec.amount_on_credit
-
+            if rec.request_type == 'pay_to_supplier_with_po':
+                rec.amount_to_pay_net = rec.balance_po_paid - rec.amount_on_credit
+            else:
+                rec.amount_to_pay_net = rec.amount_to_pay - rec.amount_on_credit
 
     @api.depends('document_ids')
     def _compute_count_document(self):
@@ -261,8 +328,6 @@ class ExpensesRequest(models.Model):
             action['domain'] = [('id', 'in', documents.ids)]
         elif len(documents) == 1:
             action['domain'] = [('id', '=', documents.id)]
-        else:
-            action = {'type': 'ir.actions.act_window_close'}
 
         context = {
                 'default_expense_id': self.id,
@@ -300,8 +365,60 @@ class ExpensesRequest(models.Model):
     def approve_inexbook_business_leader(self):
         self.state = 'business_leader_approval'
 
+    def _prepare_invoice_values(self, order, name, amount, so_line):
+        invoice_vals = {
+            'ref': order.client_order_ref,
+            'move_type': 'out_invoice',
+            'invoice_origin': order.name,
+            'invoice_user_id': order.user_id.id,
+            'narration': self.description,
+            'partner_id': self.partner_id.id,
+            'currency_id': self.currency_id.id,
+            'payment_reference': order.reference,
+            'partner_bank_id': self.bank_id.id,
+            'inex_expense_id': self.id,
+            'invoice_line_ids': [(0, 0, {
+                'name': name,
+                'price_unit': amount,
+                'quantity': 1.0,
+                'product_id': self.product_id.id,
+                'product_uom_id': so_line.product_uom.id,
+                'tax_ids': [(6, 0, so_line.tax_id.ids)],
+                'sale_line_ids': [(6, 0, [so_line.id])],
+                'analytic_tag_ids': [(6, 0, so_line.analytic_tag_ids.ids)],
+                'analytic_account_id': order.analytic_account_id.id if not so_line.display_type and order.analytic_account_id.id else False,
+            })],
+        }
+
+        return invoice_vals
+
     def approve_accounting(self):
         self.state = 'accounting_record'
+
+        if self.request_type == 'advance_invoice':
+
+            wizard = self.env['inex.payment.journal.wizard'].create({'expense_id': self.id})
+
+            return {
+                'name': _('Create Payment'),
+
+                'type': 'ir.actions.act_window',
+
+                'res_model': 'inex.payment.journal.wizard',
+
+                'view_mode': 'form',
+
+                'res_id': wizard.id,
+
+                'target': 'new'
+            }
+
+        # payment_type = 'outbound'
+        # partner_id
+        # amount
+        # currency_id
+        # journal_id
+        # ref
 
     def approve_CFO(self):
         self.state = 'finance_approval'
@@ -324,34 +441,25 @@ class ExpensesRequest(models.Model):
     def request_corrections(self):
         self.state = 'request_correction'
 
-    def _get_expense_account_source(self):
-        self.ensure_one()
-        if self.account_id:
-            account = self.account_id
-        elif self.product_id:
-            account = self.product_id.product_tmpl_id.with_company(self.company_id)._get_product_accounts()['expense']
-            if not account:
-                raise UserError(
-                    _("No Expense account found for the product %s (or for its category), please configure one.") % (
-                        self.product_id.name))
-        else:
-            account = self.env['ir.property'].with_company(self.company_id)._get('property_account_expense_categ_id',
-                                                                                 'product.category')
-            if not account:
-                raise UserError(
-                    _('Please configure Default Expense account for Category expense: `property_account_expense_categ_id`.'))
-        return account
-
-    @api.depends('partner_id', 'currency_id', 'amount_untaxed', 'amount_to_pay', 'taxes')
+    @api.depends('partner_id', 'currency_id', 'amount_untaxed', 'amount_to_pay', 'taxes', 'detail_ids')
     def _compute_tax_totals_json(self):
         """ Computed field used for custom widget's rendering.
             Only set on invoices.
         """
         for rec in self:
-            rec.tax_totals_json = json.dumps({
-                **rec._get_tax_totals(rec.amount_untaxed, rec.currency_id, rec.product_id,
-                                      rec.partner_id, rec.taxes, rec.amount_to_pay),
-            })
+            if rec.request_type in ('credit_card_payment', 'refund', 'replacement_of_petty_cash'):
+                taxes = rec.detail_ids.mapped('taxes')
+                rec.tax_totals_json = json.dumps({
+                    **rec._get_tax_totals(rec.amount_untaxed_total, rec.currency_id,
+                                          rec.detail_ids[0].product_id,
+                                          rec.partner_id, taxes, rec.amount_to_pay_total),
+                })
+
+            else:
+                rec.tax_totals_json = json.dumps({
+                    **rec._get_tax_totals(rec.amount_untaxed, rec.currency_id, rec.product_id,
+                                          rec.partner_id, rec.taxes, rec.amount_to_pay),
+                })
 
     @api.model
     def _get_tax_totals(self, amount_untaxed, currency_id, product_id, partner_id, taxes_list, amount_to_pay):
